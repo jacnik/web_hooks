@@ -37,3 +37,19 @@ You therefore decide to build a small standalone application that can handle the
     Add/Register a webhook endpoint (via an API request (ApiController) or simple UI (UI can be a simple razor page or a ASP.NET MVC app or a Vue.js app or ...))
     Trigger the sending of webhooks (via a button or API call)
     Discuss the code and approaches
+
+
+# Auhorization
+For demo purposes jwt token can be obtained from https://jwt.io/
+
+
+# Ideas (failed and otherwise):
+- Graph Ql is not the best tool for the job, make a rest api.
+- Specially when returninng paged collections try to be a bit HAL compliant and add _links and _response objects.
+- Add possibility to register for updates on specific symbols.
+- Add possibility to register for updates on specific symbols and intervals [M1, M5, M15, M30, H1, H4, D1].
+- How to call starting timestamp of a price object? start_timestamp, valid_from?
+- Use Unix millis since epoch format for storing datetime.
+- Use LiteDb for one file documentDb [https://www.litedb.org/docs/getting-started/]
+- Also use LiteDb to create integration tests, be controversial and don't write unit tests.
+- Here is some webhooks documentation: https://docs.microsoft.com/en-us/aspnet/webhooks/

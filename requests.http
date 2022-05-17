@@ -1,0 +1,47 @@
+
+
+@protocol = https
+@hostname = api.example.com
+@port = 8080
+@host = {{protocol}}://{{hostname}}:{{port}}
+
+@prices_api = {{host}}/prices
+
+@authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.cThIIoDvwdueQB468K5xDc5633seEFoqwxjF_xSJyQQ
+
+@contentType = application/json
+
+
+###
+# @name post_latest_price_update
+POST prices_api
+Authorization: {{authToken}}
+Content-Type: {{contentType}}
+
+{
+    "symbol": "MSFT",
+    "interval": "M5",
+    "open": 149.7800,
+    "high": 149.8900,
+    "low": 149.4900,
+    "close": 149.5500,
+    "volume": 1632935,
+    "valid_from": 1652805509455
+}
+
+###
+# @name register_webhook
+
+###
+# @name unregister_webhook
+
+###
+# @name get_latest_prices
+GET prices_api
+Authorization: {{authToken}}
+
+# return paged data back, list of dto's
+# {}
+#
+#
+###
