@@ -1,5 +1,5 @@
 
-# Requirements
+# Excercise
 
 This exercise will be used to discuss a real but tiny project and to check that we have a common understanding of how a web project should be developed.
 If time is an issue (for some people a takehome exercise is not possible with family/other commitments, we can discuss alternatives).
@@ -38,18 +38,36 @@ You therefore decide to build a small standalone application that can handle the
     Trigger the sending of webhooks (via a button or API call)
     Discuss the code and approaches
 
+***
 
 # Auhorization
 For demo purposes jwt token can be obtained from https://jwt.io/
 
 
-# Ideas (failed and otherwise):
+# Ideas (failed or otherwise):
 - Graph Ql is not the best tool for the job, make a rest api.
 - Specially when returninng paged collections try to be a bit HAL compliant and add _links and _response objects.
 - Add possibility to register for updates on specific symbols.
 - Add possibility to register for updates on specific symbols and intervals [M1, M5, M15, M30, H1, H4, D1].
-- How to call starting timestamp of a price object? start_timestamp, valid_from?
+- How to call starting timestamp of a price object?
+    - start_timestamp?
+    - valid_from?
 - Use Unix millis since epoch format for storing datetime.
 - Use LiteDb for one file documentDb [https://www.litedb.org/docs/getting-started/]
 - Also use LiteDb to create integration tests, be controversial and don't write unit tests.
-- Here is some webhooks documentation: https://docs.microsoft.com/en-us/aspnet/webhooks/
+- Here is some webhooks documentation:
+    - [https://docs.microsoft.com/en-us/aspnet/webhooks/]
+    - [https://devblogs.microsoft.com/dotnet/sending-webhooks-with-asp-net-webhooks-preview/] -> this one talks about Azure Table Storage which is obsolete.
+    - Looks like all the nugets for webhooks are at least 2 years old and tareting net45.
+- Try only adding events to db, no updates and deletes. At least add soft-delete.
+- Separate the process of calling all webhook endpoint from event triggerging this process, so it returns immediatly after trigger.
+- Url + trigger might be the id for each webhook, but how to handle permission to delete a webhook?
+    - add a owner property?
+    - have a separate subscribers collection?
+- Add a async exponential backoff for failed webhooks.
+- Have a threshold for number of failed webhooks call after which it gets disabled.
+- This would be a nice example of event sourcing and cqrs, but not without a mq, see [Requirements](###what-not-to-do).
+- When a price update happens all webhooks registered for that event with symbol and interval will be called.
+    - There will be no per user events.
+    - Although there could be, per user or even per group of users, like in one organization, or from 'premium tier'
+

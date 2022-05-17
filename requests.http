@@ -6,6 +6,7 @@
 @host = {{protocol}}://{{hostname}}:{{port}}
 
 @prices_api = {{host}}/prices
+@webhooks_api = {{host}}/webhooks
 
 @authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.cThIIoDvwdueQB468K5xDc5633seEFoqwxjF_xSJyQQ
 
@@ -31,6 +32,16 @@ Content-Type: {{contentType}}
 
 ###
 # @name register_webhook
+POST webhooks_api
+Authorization: {{authToken}}
+Content-Type: {{contentType}}
+
+{
+    "url": "https://docs.webhook.site/",
+    "trigger": "price_added",
+    "secret": "123.456.789",
+    "additional_headers": {}
+}
 
 ###
 # @name unregister_webhook
