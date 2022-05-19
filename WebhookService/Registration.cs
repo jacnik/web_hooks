@@ -18,8 +18,27 @@ internal class WebhookRegistered /*TODO struct*/
     public RegisterWebhookCommand Webhook {get; init;}
 }
 
-internal class WebhookRegistration
+internal static class WebhookRegistrationRestEndpoint
 {
+    internal static async Task<IResult> PostWebhook(RegisterWebhookCommand cmd, IWebhookRegistrationRepository db, CancellationToken cancellationToken)
+    {
+        var webhookRegistered = new WebhookRegistered
+            {
+                CreatedAt = DateTime.UtcNow,
+                EventId = Guid.NewGuid(),
+                Webhook = cmd
+            };
+        await db.Insert(webhookRegistered);
+
+        return Results.Created($"/webhooks/{webhookRegistered.EventId}", webhookRegistered);
+    }
+    internal static async Task<IResult> GetWebhooks(IWebhookRegistrationRepository db, CancellationToken cancellationToken) => Results.Ok(await db.GetAll());
+    internal static async Task<IResult> GetWebhookById(Guid id, IWebhookRegistrationRepository db, CancellationToken cancellationToken)
+    {
+        return await db.GetById(id) is WebhookRegistered webhook
+            ? Results.Ok(webhook)
+            : Results.NotFound();
+    }
 
 }
 
