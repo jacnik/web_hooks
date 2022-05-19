@@ -14,26 +14,29 @@
 
 ###
 # @name register_webhook
-POST {{webhooks_api}}
-Authorization: {{authToken}}
-Content-Type: {{contentType}}
-
-{
+###
+curl --request POST \
+  --url {{webhooks_api}} \
+  --header 'authorization: {{authToken}}' \
+  --header 'content-type: {{contentType}}' \
+  --data '{
     "url": "https://docs.webhook.site/",
     "trigger": "price_added",
     "secret": "123.456.789",
-    "additional_headers": {}
-}
+    "additional_headers": {}}'
+
 
 ###
 # @name get_all_registered_webhooks
-GET {{webhooks_api}}
-Authorization: {{authToken}}
+curl --request GET \
+  --url {{webhooks_api}} \
+  --header 'authorization: {{authToken}}'
 
 ###
 # @name get_registered_webhook
-GET {{webhooks_api}}/28f091d5-969f-4b5a-a7c2-cfd527a0c837
-Authorization: {{authToken}}
+curl --request GET \
+  --url {{webhooks_api}}/28f091d5-969f-4b5a-a7c2-cfd527a0c837 \
+  --header 'authorization: {{authToken}}'
 
 ###
 # @name unregister_webhook
@@ -46,7 +49,4 @@ Authorization: {{authToken}}
 #
 ###
 
-###
-# @name get_root
-GET http://localhost:5000/
 

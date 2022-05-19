@@ -2,7 +2,22 @@
 # Usage
 Example requests are in `requests.http` file.
 In vscode they can be send directly with [REST client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
-Or easily turned into curl syntax.
+Or by using curl after expanding variables.
+
+
+# Improvements
+- logging
+- Rate limit outbound request to same domain to protect agaist being part of an involuntary DDoS
+- Create 'smart' Guid types, ex WebhookRegisteredId
+- Avoid primitive obsession by adding value objects or Enums
+- Validate value objects during deserialization.
+- Replace naming conventions (appdending ..Command to class names) by creating interfaces, even empty ICommand?
+- Add swagger
+- Add authentication
+
+
+# Notes
+- Since LiteDb doesn't support async opeations Tasks where used as a way to simulate it.
 
 
 # Excercise
@@ -45,10 +60,6 @@ You therefore decide to build a small standalone application that can handle the
     Discuss the code and approaches
 
 ***
-
-# Auhorization
-For demo purposes jwt token can be obtained from https://jwt.io/
-
 
 # Ideas (failed or otherwise):
 - Graph Ql is not the best tool for the job, make a rest api.
