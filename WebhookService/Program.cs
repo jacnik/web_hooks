@@ -19,7 +19,7 @@ var app = builder.Build();
 app.UseHttpsRedirection();
 
 app.MapGet("/", () => "Root");
-app.MapPost("/webhooks",  (RegisterWebhookCommand cmd, IWebhookRegistrationRepository db, CancellationToken cancellationToken) =>
+app.MapPost("/webhooks", async (RegisterWebhookCommand cmd, IWebhookRegistrationRepository db, CancellationToken cancellationToken) =>
 {
     var webhookRegistered = new WebhookRegistered
     {
@@ -27,17 +27,17 @@ app.MapPost("/webhooks",  (RegisterWebhookCommand cmd, IWebhookRegistrationRepos
         EventId = Guid.NewGuid(),
         Webhook = cmd
     };
-    db.Insert(webhookRegistered);
+    await db.Insert(webhookRegistered);
 
     return Results.Created($"/webhooks/{webhookRegistered.EventId}", webhookRegistered);
 });
 
-app.MapGet("/webhooks",  (IWebhookRegistrationRepository db, CancellationToken cancellationToken) =>
-    db.GetAll()
+app.MapGet("/webhooks", async (IWebhookRegistrationRepository db, CancellationToken cancellationToken) =>
+    await db.GetAll()
 );
 
-app.MapGet("/webhooks/{id}",  (Guid id, IWebhookRegistrationRepository db, CancellationToken cancellationToken) =>
-    db.GetById(id) is WebhookRegistered webhook
+app.MapGet("/webhooks/{id}", async (Guid id, IWebhookRegistrationRepository db, CancellationToken cancellationToken) =>
+    await db.GetById(id) is WebhookRegistered webhook
         ? Results.Ok(webhook)
         : Results.NotFound()
 );

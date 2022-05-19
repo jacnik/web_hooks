@@ -11,7 +11,7 @@ internal readonly struct RegisterWebhookCommand /* TODO ICommand instead of ...C
     /* TODO owner */
 }
 
-internal class WebhookRegistered /*TODO truct*/
+internal class WebhookRegistered /*TODO struct*/
 {
     public Guid EventId {get; init;} /* TODO create WebhookRegisteredId type */
     public DateTime CreatedAt {get; init;}
@@ -25,9 +25,9 @@ internal class WebhookRegistration
 
 internal interface IWebhookRegistrationRepository
 {
-    public void /*TODO return type */ Insert(WebhookRegistered webhook);
-    public WebhookRegistered /*TODO return type */ GetById(Guid id);
-    public IEnumerable<WebhookRegistered> /*TODO return type */ GetAll(/* page */);
+    public Task /*TODO return type */ Insert(WebhookRegistered webhook);
+    public ValueTask<WebhookRegistered> /*TODO return type */ GetById(Guid id);
+    public Task<IEnumerable<WebhookRegistered>> /*TODO return type */ GetAll(/* page */);
 }
 
 internal class WebhookRegistrationRepository : IWebhookRegistrationRepository
@@ -46,31 +46,24 @@ internal class WebhookRegistrationRepository : IWebhookRegistrationRepository
         this.registrationsCollection = registrationsCollection;
     }
 
-    public void /*TODO return type */ Insert(WebhookRegistered webhook)
+    public async Task /*TODO return type */ Insert(WebhookRegistered webhook)
     {
-        this.registrationsCollection.Insert(webhook);
+        await Task.Run(() => this.registrationsCollection.Insert(webhook));
     }
 
-    public WebhookRegistered /*TODO return type */ GetById(Guid id)
+    public async ValueTask<WebhookRegistered> /*TODO return type */ GetById(Guid id)
     {
-        // var results = priceCollection.Query()
-        //     .Where(p => p.Symbol == "MSFT")
-        //     .Where(p => p.Interval == "M1")
-        //     .OrderBy(p => p.ValidFrom)
-        //     .Select(p => p)
-        //     .Limit(10)
-        //     .ToList();
-
         /* TODO try catch */
         var dbRsp = this.registrationsCollection.Query()
             .Where(r => r.EventId == id)
             .Select(r => r)
             .ToList();
 
-        return dbRsp.FirstOrDefault();
+        /* Forcing Task to compensate for lack of async/await in LiteDb */
+        return await Task.FromResult(dbRsp.FirstOrDefault());
     }
 
-    public IEnumerable<WebhookRegistered> /*TODO return type */ GetAll(/* page */)
+    public async Task<IEnumerable<WebhookRegistered>> /*TODO return type */ GetAll(/* page */)
     {
         /* TODO try catch */
 
@@ -80,6 +73,6 @@ internal class WebhookRegistrationRepository : IWebhookRegistrationRepository
             .Limit(10)
             .ToEnumerable();
 
-        return dbRsp;
+        return await Task.FromResult(dbRsp);
     }
 }
