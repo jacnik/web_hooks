@@ -1,11 +1,10 @@
 
 
-@protocol = https
-@hostname = api.example.com
-@port = 8080
+@protocol = http
+@hostname = localhost
+@port = 5000
 @host = {{protocol}}://{{hostname}}:{{port}}
 
-@prices_api = {{host}}/prices
 @webhooks_api = {{host}}/webhooks
 
 @authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.cThIIoDvwdueQB468K5xDc5633seEFoqwxjF_xSJyQQ
@@ -14,25 +13,8 @@
 
 
 ###
-# @name post_latest_price_update
-POST prices_api
-Authorization: {{authToken}}
-Content-Type: {{contentType}}
-
-{
-    "symbol": "MSFT",
-    "interval": "M5",
-    "open": 149.7800,
-    "high": 149.8900,
-    "low": 149.4900,
-    "close": 149.5500,
-    "volume": 1632935,
-    "valid_from": 1652805509455
-}
-
-###
 # @name register_webhook
-POST webhooks_api
+POST {{webhooks_api}}
 Authorization: {{authToken}}
 Content-Type: {{contentType}}
 
@@ -44,15 +26,27 @@ Content-Type: {{contentType}}
 }
 
 ###
-# @name unregister_webhook
+# @name get_all_registered_webhooks
+GET {{webhooks_api}}
+Authorization: {{authToken}}
 
 ###
-# @name get_latest_prices
-GET prices_api
+# @name get_registered_webhook
+GET {{webhooks_api}}/28f091d5-969f-4b5a-a7c2-cfd527a0c837
 Authorization: {{authToken}}
+
+###
+# @name unregister_webhook
+
+
 
 # return paged data back, list of dto's
 # {}
 #
 #
 ###
+
+###
+# @name get_root
+GET http://localhost:5000/
+

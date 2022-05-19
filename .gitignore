@@ -6,6 +6,7 @@ project.lock.json
 
 # Visual Studio Code
 .vscode
+.devcontainer
 
 # User-specific files
 *.suo
@@ -30,3 +31,6 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+
+# Local db
+*.db
