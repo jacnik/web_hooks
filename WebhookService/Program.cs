@@ -15,16 +15,16 @@ builder.Services
         p.GetRequiredService<LiteDatabase>().GetCollection<WebhookRegistered>("WebhookRegistrations"));
 
 
-
 var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+
 app.MapGet("/", () => "Root");
 
-app.MapPost("/webhooks", WebhookRegistrationRestHandlers.PostWebhook);
-app.MapGet("/webhooks", WebhookRegistrationRestHandlers.GetWebhooks);
-app.MapGet("/webhooks/{id}", WebhookRegistrationRestHandlers.GetWebhookById);
+app.MapPost("/webhooks", WebhookRegistrationRestApi.PostWebhook);
+app.MapGet("/webhooks", WebhookRegistrationRestApi.GetWebhooks);
+app.MapGet("/webhooks/{id}", WebhookRegistrationRestApi.GetWebhookById);
 
 // TRIGGER sending webhooks, return summary
 

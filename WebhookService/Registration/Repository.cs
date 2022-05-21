@@ -1,14 +1,25 @@
 using LiteDB;
+using OneOf;
 
 namespace WebhookService.Registration;
 
 
+internal record WebhookRegistrationResponse<T>
+{
+    internal struct Success{ public T Value {get; init;}}
+    internal struct NotFound{}
+    internal struct Error{ public Exception Reason {get; init;}}
+
+    public OneOf<Success, NotFound, Error> Result {get; init;}
+}
+
 internal interface IWebhookRegistrationRepository
 {
-    public Task /*TODO return type */ Insert(WebhookRegistered webhook, CancellationToken ct);
-    public ValueTask<WebhookRegistered?> /*TODO return type */ GetById(Guid id, CancellationToken ct);
-    public Task<IEnumerable<WebhookRegistered>> /*TODO return type */ GetAll(/* page */CancellationToken ct);
+    public Task<WebhookRegistrationResponse<WebhookRegistered>> Insert(WebhookRegistered webhook, CancellationToken ct);
+    public ValueTask<WebhookRegistrationResponse<WebhookRegistered>> GetById(Guid id, CancellationToken ct);
+    public Task<WebhookRegistrationResponse<IEnumerable<WebhookRegistered>>> GetAll(/* page */CancellationToken ct);
 }
+
 
 internal class WebhookRegistrationRepository : IWebhookRegistrationRepository
 {
@@ -22,38 +33,81 @@ internal class WebhookRegistrationRepository : IWebhookRegistrationRepository
         this.registrationsCollection = registrationsCollection;
     }
 
-    public async Task /*TODO return type */ Insert(WebhookRegistered webhook, CancellationToken ct)
+    public async Task<WebhookRegistrationResponse<WebhookRegistered>> Insert(WebhookRegistered webhook, CancellationToken ct)
     {
         /* TODO constraint on registring two webhooks for the same trigger and url*/
-        await Task.Run(() => this.registrationsCollection.Insert(webhook), ct);
-    }
-
-    public async ValueTask<WebhookRegistered?> /*TODO return type */ GetById(Guid id, CancellationToken ct)
-    {
-        return await Task.Run<WebhookRegistered?>(() => {
-            /* TODO try catch */
-            var dbRsp = this.registrationsCollection.Query()
-                .Where(r => r.EventId == id)
-                .Select(r => r)
-                .Limit(1)
-                .ToList();
-
-            return dbRsp.Count != 0 ? dbRsp.First() : null;
+        return await Task.Run(() => {
+            try
+            {
+                this.registrationsCollection.Insert(webhook);
+                return new WebhookRegistrationResponse<WebhookRegistered>
+                {
+                    Result = new WebhookRegistrationResponse<WebhookRegistered>.Success{Value = webhook}
+                };
+            }
+            catch (Exception ex)
+            {
+                return new WebhookRegistrationResponse<WebhookRegistered>
+                {
+                    Result = new WebhookRegistrationResponse<WebhookRegistered>.Error{Reason = ex}
+                };
+            }
         }, ct);
     }
 
-    public async Task<IEnumerable<WebhookRegistered>> /*TODO return type */ GetAll(/* page */CancellationToken ct)
+    public async ValueTask<WebhookRegistrationResponse<WebhookRegistered>> GetById(Guid id, CancellationToken ct)
     {
-        /* TODO try catch */
+        return await Task.Run<WebhookRegistrationResponse<WebhookRegistered>>(() => {
+            try
+            {
+                var dbRsp = this.registrationsCollection.Query()
+                    .Where(r => r.EventId == id)
+                    .Select(r => r)
+                    .Limit(1)
+                    .ToList();
+
+                return new WebhookRegistrationResponse<WebhookRegistered>
+                {
+                    Result = dbRsp.Count == 0
+                        ? new WebhookRegistrationResponse<WebhookRegistered>.NotFound()
+                        : new WebhookRegistrationResponse<WebhookRegistered>.Success{Value = dbRsp.First()}
+                };
+            }
+            catch (Exception ex)
+            {
+                return new WebhookRegistrationResponse<WebhookRegistered>
+                {
+                    Result = new WebhookRegistrationResponse<WebhookRegistered>.Error{Reason = ex}
+                };
+            }
+        }, ct);
+    }
+
+    public async Task<WebhookRegistrationResponse<IEnumerable<WebhookRegistered>>> GetAll(/* page */CancellationToken ct)
+    {
         return await Task.Run(() =>
         {
-            var dbRsp = this.registrationsCollection.Query()
-                .OrderByDescending(r => r.CreatedAt)
-                .Select(r => r)
-                .Limit(10)
-                .ToEnumerable();
+            try
+            {
+                var dbRsp = this.registrationsCollection.Query()
+                    .OrderByDescending(r => r.CreatedAt)
+                    .Select(r => r)
+                    .Limit(10)
+                    .ToEnumerable();
 
-            return dbRsp;
+                return new WebhookRegistrationResponse<IEnumerable<WebhookRegistered>>
+                {
+                    Result = new WebhookRegistrationResponse<IEnumerable<WebhookRegistered>>.Success{Value = dbRsp}
+                };
+            }
+            catch (Exception ex)
+            {
+                return new WebhookRegistrationResponse<IEnumerable<WebhookRegistered>>()
+                {
+                    Result = new WebhookRegistrationResponse<IEnumerable<WebhookRegistered>>.Error{Reason = ex}
+                };
+            }
+
         }, ct);
     }
 }

@@ -13,7 +13,9 @@ Or by using curl after expanding variables.
 - Validate value objects during deserialization.
 - Replace naming conventions (appdending ..Command to class names) by creating interfaces, even empty ICommand?
 - Add swagger
-- Add authentication
+- Add authentication/authorization
+- Instead of making RbResponse types generic it would be better if each method defined it's own result type
+- Catch specific Exceptions, not base Exception
 
 
 # Notes
