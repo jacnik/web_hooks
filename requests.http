@@ -21,7 +21,7 @@ curl --request POST \
   --header 'authorization: {{authToken}}' \
   --header 'content-type: {{contentType}}' \
   --data '{
-    "url": "https://enpo0mqeo4e.x.pipedream.net/",
+    "url": "https://en9bayo995ajl.x.pipedream.net",
     "trigger": "something_happened",
     "content": "123.456.789",
     "additionalHeaders": {}}'
@@ -36,7 +36,7 @@ curl --request GET \
 ###
 # @name get_registered_webhook
 curl --request GET \
-  --url {{webhooks_api}}/769d76d3-1908-44db-b9a4-18e1ab16d2e4 \
+  --url {{webhooks_api}}/17578ad8-2bbc-4595-b641-03f54922f0ed \
   --header 'authorization: {{authToken}}'
 
 ###
@@ -48,27 +48,7 @@ curl --request POST \
   --data '{"eventName": "something_happened"}'
 
 
-###
-# @name get_requests_to_webhook_test_url
-# "uuid": "c874ddf0-7592-49c4-9a8f-e7dbb6319261",
-curl --request GET \
-  --url https://webhook.site/token/c874ddf0-7592-49c4-9a8f-e7dbb6319261/requests
 
-
-###
-# @name create_webhook_test_url
-curl --request POST
-  --url https://webhook.site/token
-  --data '{
-    "default_status": 200,
-    "default_content": "Hello world!",
-    "default_content_type": "text/html",
-    "timeout": 0,
-    "cors": false,
-    "expiry": true,
-    "alias": "my-webhook",
-    "actions": true
-  }'
 
 ### Used https://requestbin.com to test webhooks
 
@@ -78,4 +58,7 @@ curl -d '{ "name": "Darth Vader" }' \
   https://enpo0mqeo4e.x.pipedream.net/
 
 ###
-https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-6.0&tabs=visual-studio
+https://requestbin.com/r/enpo0mqeo4e/29U14352yiYct4GUgv4roYRW1Pw
+
+https://en9bayo995ajl.x.pipedream.net
+

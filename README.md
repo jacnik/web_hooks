@@ -21,11 +21,12 @@ Or by using curl after expanding variables.
 - Constraint on registring two webhooks for the same trigger and url
 - Page responses.
 - WebhookSender should be in a pool so work can be offloaded on different instances.
-
+- check for response status when sending webhook. Add async exponential backoff on failure.
+- save and expose info about webhooks send so far with process id so used can query for it.
 
 # Notes
 - Since LiteDb doesn't support async opeations Tasks where used as a way to simulate it.
-- Urls from https://docs.webhook.site/ returned 404 so used [requestbin](https://requestbin.com/r/enpo0mqeo4e/29Tm0yBp3X5W31FnAoudq535XFA) instead
+- Urls from https://docs.webhook.site/ returned 404 so used [requestbin](https://requestbin.com/r/enpo0mqeo4e/29U14352yiYct4GUgv4roYRW1Pw) instead
 
 
 # Excercise

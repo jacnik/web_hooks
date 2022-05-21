@@ -18,7 +18,11 @@ builder.Services
     .AddSingleton<ILiteCollection<WebhookRegistered>>(p =>
         p.GetRequiredService<LiteDatabase>().GetCollection<WebhookRegistered>("WebhookRegistrations"))
     .AddSingleton<IWebhookSenderRepository, WebhookSenderRepository>()
-    .AddSingleton<Channel<ActionEvent>>(Channel.CreateUnbounded<ActionEvent>())
+    .AddSingleton<Channel<WebhooksScheduled>>(Channel.CreateUnbounded<WebhooksScheduled>())
+    .AddSingleton<ChannelReader<WebhooksScheduled>>(p =>
+        p.GetRequiredService<Channel<WebhooksScheduled>>().Reader)
+    .AddSingleton<ChannelWriter<WebhooksScheduled>>(p =>
+        p.GetRequiredService<Channel<WebhooksScheduled>>().Writer)
     .AddScoped<WebhookScheduler>()
     .AddHostedService<WebhookSender>();
 
