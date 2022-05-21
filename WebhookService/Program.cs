@@ -1,8 +1,12 @@
-﻿using LiteDB;
+﻿using System.Threading.Channels;
+using LiteDB;
 using WebhookService.Registration;
 using WebhookService.Sender;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Logging
+    .ClearProviders()
+    .AddConsole();
 
 var currentDir = Directory.GetCurrentDirectory();
 var dbName = "WebhookData.db";
@@ -14,7 +18,9 @@ builder.Services
     .AddSingleton<ILiteCollection<WebhookRegistered>>(p =>
         p.GetRequiredService<LiteDatabase>().GetCollection<WebhookRegistered>("WebhookRegistrations"))
     .AddSingleton<IWebhookSenderRepository, WebhookSenderRepository>()
-    .AddSingleton<WebhookSender>();
+    .AddSingleton<Channel<ActionEvent>>(Channel.CreateUnbounded<ActionEvent>())
+    .AddScoped<WebhookScheduler>()
+    .AddHostedService<WebhookSender>();
 
 
 var app = builder.Build();

@@ -21,7 +21,7 @@ curl --request POST \
   --header 'authorization: {{authToken}}' \
   --header 'content-type: {{contentType}}' \
   --data '{
-    "url": "https://webhook.site/token/c874ddf0-7592-49c4-9a8f-e7dbb6319261/",
+    "url": "https://enpo0mqeo4e.x.pipedream.net/",
     "trigger": "something_happened",
     "content": "123.456.789",
     "additionalHeaders": {}}'
@@ -36,7 +36,7 @@ curl --request GET \
 ###
 # @name get_registered_webhook
 curl --request GET \
-  --url {{webhooks_api}}/28f091d5-969f-4b5a-a7c2-cfd527a0c837 \
+  --url {{webhooks_api}}/769d76d3-1908-44db-b9a4-18e1ab16d2e4 \
   --header 'authorization: {{authToken}}'
 
 ###
@@ -57,5 +57,25 @@ curl --request GET \
 
 ###
 # @name create_webhook_test_url
-curl --request POST --url https://webhook.site/token
+curl --request POST
+  --url https://webhook.site/token
+  --data '{
+    "default_status": 200,
+    "default_content": "Hello world!",
+    "default_content_type": "text/html",
+    "timeout": 0,
+    "cors": false,
+    "expiry": true,
+    "alias": "my-webhook",
+    "actions": true
+  }'
 
+### Used https://requestbin.com to test webhooks
+
+###
+curl -d '{ "name": "Darth Vader" }' \
+  -H "Content-Type: application/json" \
+  https://enpo0mqeo4e.x.pipedream.net/
+
+###
+https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/hosted-services?view=aspnetcore-6.0&tabs=visual-studio

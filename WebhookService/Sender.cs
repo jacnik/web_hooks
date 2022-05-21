@@ -1,3 +1,4 @@
+using System.Threading.Channels;
 using WebhookService.Registration;
 using OneOf;
 using LiteDB;
@@ -59,27 +60,37 @@ internal static class WebhookSenderRestApi
 {
     internal static async Task<IResult> PostActionEvent(
         ActionEvent action,
-        WebhookSender sender,
+        WebhookScheduler scheduler,
         CancellationToken ct)
     {
-        await sender.OnActionHappened(action);
+        await scheduler.OnActionHappened(action);
         return Results.Ok();
     }
 }
 
-internal class WebhookSender
+internal class WebhookSender : BackgroundService
 {
+    private readonly Channel<ActionEvent> actions;
     private readonly IWebhookSenderRepository repo;
-    public WebhookSender(IWebhookSenderRepository repo)
+    private readonly ILogger<WebhookSender> logger;
+
+
+    public WebhookSender(
+        Channel<ActionEvent> actions,
+        IWebhookSenderRepository repo,
+        ILogger<WebhookSender> logger)
     {
+        this.actions = actions;
         this.repo = repo;
+        this.logger = logger;
     }
 
-    public async Task /* TODO return RequestAccepted obj*/ OnActionHappened(ActionEvent action)
+    public async Task OnEvent(ActionEvent action)
     {
         var triggersRsp = await repo.GetForTrigger(action.EventName);
         await triggersRsp.Result.Match(
             async success => {
+                /* TODO interface */
                 using (var client = new HttpClient())
                 {
                     foreach (var webhook in success.Value)
@@ -87,13 +98,42 @@ internal class WebhookSender
                         var httpRsp = await client.PostAsync(
                             webhook.Webhook.Url,
                             new StringContent(webhook.Webhook.Content));
-
                     }
                 }
-
-                await Task.CompletedTask;
             },
-            error => Task.CompletedTask // TODO return error
+            error => Task.Run(() => {
+                logger.LogInformation("Queued Hosted Service is stopping.");
+            })
         );
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken ct)
+    {
+        while (await this.actions.Reader.WaitToReadAsync(ct))
+        {
+            var action = await this.actions.Reader.ReadAsync(ct);
+            await OnEvent(action);
+        }
+    }
+
+    public override async Task StopAsync(CancellationToken ct)
+    {
+        logger.LogInformation("Queued Hosted Service is stopping.");
+
+        await base.StopAsync(ct);
+    }
+}
+
+internal class WebhookScheduler
+{
+    private readonly Channel<ActionEvent> actions;
+    public WebhookScheduler(Channel<ActionEvent> actions)
+    {
+        this.actions = actions;
+    }
+
+    public async Task /* TODO return RequestAccepted obj*/ OnActionHappened(ActionEvent action)
+    {
+        await actions.Writer.WriteAsync(action);
     }
 }

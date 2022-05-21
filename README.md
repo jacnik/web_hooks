@@ -19,11 +19,13 @@ Or by using curl after expanding variables.
 - Partition webhook sending to separate Background tasks/Threads
 - Figure out authentication for sending webhooks
 - Constraint on registring two webhooks for the same trigger and url
-- Page responses
+- Page responses.
+- WebhookSender should be in a pool so work can be offloaded on different instances.
 
 
 # Notes
 - Since LiteDb doesn't support async opeations Tasks where used as a way to simulate it.
+- Urls from https://docs.webhook.site/ returned 404 so used [requestbin](https://requestbin.com/r/enpo0mqeo4e/29Tm0yBp3X5W31FnAoudq535XFA) instead
 
 
 # Excercise
