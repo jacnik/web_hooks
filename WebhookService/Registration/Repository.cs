@@ -4,7 +4,7 @@ using OneOf;
 namespace WebhookService.Registration;
 
 
-internal record WebhookRegistrationResponse<T>
+internal struct WebhookRegistrationResponse<T>
 {
     internal struct Success{ public T Value {get; init;}}
     internal struct NotFound{}
@@ -17,9 +17,8 @@ internal interface IWebhookRegistrationRepository
 {
     public Task<WebhookRegistrationResponse<WebhookRegistered>> Insert(WebhookRegistered webhook, CancellationToken ct);
     public ValueTask<WebhookRegistrationResponse<WebhookRegistered>> GetById(Guid id, CancellationToken ct);
-    public Task<WebhookRegistrationResponse<IEnumerable<WebhookRegistered>>> GetAll(/* page */CancellationToken ct);
+    public Task<WebhookRegistrationResponse<IEnumerable<WebhookRegistered>>> GetAll(CancellationToken ct);
 }
-
 
 internal class WebhookRegistrationRepository : IWebhookRegistrationRepository
 {
@@ -29,13 +28,11 @@ internal class WebhookRegistrationRepository : IWebhookRegistrationRepository
     {
         registrationsCollection.EnsureIndex(p => p.EventId);
         registrationsCollection.EnsureIndex(p => p.CreatedAt);
-        registrationsCollection.EnsureIndex(p => p.Webhook.Trigger);
         this.registrationsCollection = registrationsCollection;
     }
 
     public async Task<WebhookRegistrationResponse<WebhookRegistered>> Insert(WebhookRegistered webhook, CancellationToken ct)
     {
-        /* TODO constraint on registring two webhooks for the same trigger and url*/
         return await Task.Run(() => {
             try
             {
@@ -83,7 +80,7 @@ internal class WebhookRegistrationRepository : IWebhookRegistrationRepository
         }, ct);
     }
 
-    public async Task<WebhookRegistrationResponse<IEnumerable<WebhookRegistered>>> GetAll(/* page */CancellationToken ct)
+    public async Task<WebhookRegistrationResponse<IEnumerable<WebhookRegistered>>> GetAll(CancellationToken ct)
     {
         return await Task.Run(() =>
         {
@@ -92,8 +89,7 @@ internal class WebhookRegistrationRepository : IWebhookRegistrationRepository
                 var dbRsp = this.registrationsCollection.Query()
                     .OrderByDescending(r => r.CreatedAt)
                     .Select(r => r)
-                    .Limit(10)
-                    .ToEnumerable();
+                    .ToList();
 
                 return new WebhookRegistrationResponse<IEnumerable<WebhookRegistered>>
                 {
@@ -107,7 +103,6 @@ internal class WebhookRegistrationRepository : IWebhookRegistrationRepository
                     Result = new WebhookRegistrationResponse<IEnumerable<WebhookRegistered>>.Error{Reason = ex}
                 };
             }
-
         }, ct);
     }
 }

@@ -4,7 +4,7 @@ internal readonly struct RegisterWebhookCommand
 {
     public string Url {get; init;}
     public string Trigger {get; init;}
-    public string Secret {get; init;}
+    public string Content {get; init;}
     public IDictionary<string, string> AdditionalHeaders {get; init;}
 }
 

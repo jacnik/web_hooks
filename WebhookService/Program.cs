@@ -1,6 +1,6 @@
 ﻿using LiteDB;
 using WebhookService.Registration;
-
+using WebhookService.Sender;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +12,9 @@ builder.Services
     .AddSingleton<LiteDatabase>(new LiteDatabase(dbPath))
     .AddSingleton<IWebhookRegistrationRepository, WebhookRegistrationRepository>()
     .AddSingleton<ILiteCollection<WebhookRegistered>>(p =>
-        p.GetRequiredService<LiteDatabase>().GetCollection<WebhookRegistered>("WebhookRegistrations"));
+        p.GetRequiredService<LiteDatabase>().GetCollection<WebhookRegistered>("WebhookRegistrations"))
+    .AddSingleton<IWebhookSenderRepository, WebhookSenderRepository>()
+    .AddSingleton<WebhookSender>();
 
 
 var app = builder.Build();
@@ -26,6 +28,6 @@ app.MapPost("/webhooks", WebhookRegistrationRestApi.PostWebhook);
 app.MapGet("/webhooks", WebhookRegistrationRestApi.GetWebhooks);
 app.MapGet("/webhooks/{id}", WebhookRegistrationRestApi.GetWebhookById);
 
-// TRIGGER sending webhooks, return summary
+app.MapPost("/events", WebhookSenderRestApi.PostActionEvent);
 
 app.Run();

@@ -6,6 +6,7 @@
 @host = {{protocol}}://{{hostname}}:{{port}}
 
 @webhooks_api = {{host}}/webhooks
+@events_api = {{host}}/events
 
 @authToken = Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.cThIIoDvwdueQB468K5xDc5633seEFoqwxjF_xSJyQQ
 
@@ -20,10 +21,10 @@ curl --request POST \
   --header 'authorization: {{authToken}}' \
   --header 'content-type: {{contentType}}' \
   --data '{
-    "url": "https://docs.webhook.site/",
-    "trigger": "price_added",
-    "secret": "123.456.789",
-    "additional_headers": {}}'
+    "url": "https://webhook.site/token/c874ddf0-7592-49c4-9a8f-e7dbb6319261/",
+    "trigger": "something_happened",
+    "content": "123.456.789",
+    "additionalHeaders": {}}'
 
 
 ###
@@ -39,14 +40,22 @@ curl --request GET \
   --header 'authorization: {{authToken}}'
 
 ###
-# @name unregister_webhook
+# @name trigger_webhooks
+curl --request POST \
+  --url {{events_api}} \
+  --header 'authorization: {{authToken}}' \
+  --header 'content-type: {{contentType}}' \
+  --data '{"eventName": "something_happened"}'
 
 
-
-# return paged data back, list of dto's
-# {}
-#
-#
 ###
+# @name get_requests_to_webhook_test_url
+# "uuid": "c874ddf0-7592-49c4-9a8f-e7dbb6319261",
+curl --request GET \
+  --url https://webhook.site/token/c874ddf0-7592-49c4-9a8f-e7dbb6319261/requests
 
+
+###
+# @name create_webhook_test_url
+curl --request POST --url https://webhook.site/token
 

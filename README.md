@@ -16,6 +16,10 @@ Or by using curl after expanding variables.
 - Add authentication/authorization
 - Instead of making RbResponse types generic it would be better if each method defined it's own result type
 - Catch specific Exceptions, not base Exception
+- Partition webhook sending to separate Background tasks/Threads
+- Figure out authentication for sending webhooks
+- Constraint on registring two webhooks for the same trigger and url
+- Page responses
 
 
 # Notes
