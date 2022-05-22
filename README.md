@@ -48,10 +48,14 @@ curl --request POST \
 - WebhookSender should be in a pool so work can be offloaded on different instances.
 - check for response status when sending webhook. Add async exponential backoff on failure.
 - save and expose info about webhooks send so far with process id so used can query for it.
+- Have a threshold for number of failed webhooks call after which it gets disabled.
+- This would be a nice example of event sourcing and cqrs, but not without a mq.
+
 
 # Notes
 - Since LiteDb doesn't support async opeations Tasks where used as a way to simulate it.
 - Urls from https://docs.webhook.site/ returned 404 so used [requestbin](https://requestbin.com/r/enpo0mqeo4e/29U14352yiYct4GUgv4roYRW1Pw) instead
+
 
 
 # Excercise
@@ -92,42 +96,4 @@ You therefore decide to build a small standalone application that can handle the
     Add/Register a webhook endpoint (via an API request (ApiController) or simple UI (UI can be a simple razor page or a ASP.NET MVC app or a Vue.js app or ...))
     Trigger the sending of webhooks (via a button or API call)
     Discuss the code and approaches
-
-***
-
-# Ideas (failed or otherwise):
-- Graph Ql is not the best tool for the job, make a rest api.
-- Specially when returninng paged collections try to be a bit HAL compliant and add _links and _response objects.
-- Add possibility to register for updates on specific symbols.
-- Add possibility to register for updates on specific symbols and intervals [M1, M5, M15, M30, H1, H4, D1].
-- How to call starting timestamp of a price object?
-    - start_timestamp?
-    - valid_from?
-- Use Unix millis since epoch format for storing datetime.
-- Use LiteDb for one file documentDb [https://www.litedb.org/docs/getting-started/]
-    - Unfortunatel it is synchronous so wrap calls to it's methods in Task to mimick async/await.
-- Also use LiteDb to create integration tests, be controversial and don't write unit tests.
-- Here is some webhooks documentation:
-    - [https://docs.microsoft.com/en-us/aspnet/webhooks/]
-    - [https://devblogs.microsoft.com/dotnet/sending-webhooks-with-asp-net-webhooks-preview/] -> this one talks about Azure Table Storage which is obsolete.
-    - Looks like all the nugets for webhooks are at least 2 years old and tareting net45.
-- Try only adding events to db, no updates and deletes. At least add soft-delete.
-- Separate the process of calling all webhook endpoint from event triggerging this process, so it returns immediatly after trigger.
-    - When using bakground task for calling webhook urls with in memory queue not all webhooks will be called when service will be redeployed during this process.
-    - Pass cancellation token to this process on shutdown to handle it gracefully.
-- Url + trigger might be the id for each webhook, but how to handle permission to delete a webhook?
-    - add a owner property?
-    - have a separate subscribers collection?
-- Add a async exponential backoff for failed webhooks.
-- Have a threshold for number of failed webhooks call after which it gets disabled.
-- This would be a nice example of event sourcing and cqrs, but not without a mq, see [Requirements](###what-not-to-do).
-- When a price update happens all webhooks registered for that event with symbol and interval will be called.
-    - There will be no per user events.
-    - Although there could be, per user or even per group of users, like in one organization, or from 'premium tier'
-- Load tests wouldn't go amiss, after all performance is a feature, degrading it is a bug. NBomber.
-- Can add cache for webhooks [https://docs.microsoft.com/en-us/aspnet/core/performance/caching/memory?view=aspnetcore-6.0].
-
-- Split project by features/slices.
-- appsettings.json file would need to be added so the service can be deployed to different stages.
-
 

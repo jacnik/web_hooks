@@ -48,18 +48,15 @@ curl --request POST \
   --data '{"eventName": "something_happened"}'
 
 
-
-
 ### Used https://requestbin.com to test webhooks
 
-###
-curl -d '{ "name": "Darth Vader" }' \
-  -H "Content-Type: application/json" \
-  https://enpo0mqeo4e.x.pipedream.net/
+### Dashboard urls:
+# https://requestbin.com/r/en9bayo995ajl/29UByXvXsakhUOHQ1DRuknkAcFl
+# https://requestbin.com/r/enpo0mqeo4e/29UByXnD84uVwEK0ZuUHFgcb8pn
 
+# Endpoints
+# https://en9bayo995ajl.x.pipedream.net
+# https://enpo0mqeo4e.x.pipedream.net/"
 ###
-https://requestbin.com/r/en9bayo995ajl/29UByXvXsakhUOHQ1DRuknkAcFl
-https://requestbin.com/r/enpo0mqeo4e/29UByXnD84uVwEK0ZuUHFgcb8pn
 
-https://en9bayo995ajl.x.pipedream.net
 
