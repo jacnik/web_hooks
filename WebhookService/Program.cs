@@ -42,3 +42,4 @@ app.MapGet("/webhooks/{id}", WebhookRegistrationRestApi.GetWebhookById);
 app.MapPost("/events", WebhookSenderRestApi.PostActionEvent);
 
 app.Run();
+public partial class Program { }
