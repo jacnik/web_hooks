@@ -2,7 +2,7 @@ using System.Threading.Channels;
 
 namespace WebhookService.Sender;
 
-internal class WebhookScheduler : IDisposable
+internal class WebhookScheduler
 {
     private readonly ChannelWriter<WebhooksScheduled> schedules;
     public WebhookScheduler(ChannelWriter<WebhooksScheduled> schedules)
@@ -19,10 +19,5 @@ internal class WebhookScheduler : IDisposable
         };
         await schedules.WriteAsync(schedule);
         return schedule;
-    }
-
-    public void Dispose()
-    {
-        schedules.Complete();
     }
 }

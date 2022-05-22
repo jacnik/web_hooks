@@ -13,6 +13,7 @@ var dbName = "WebhookData.db";
 var dbPath = Path.Join(currentDir, dbName);
 
 builder.Services
+    .AddHttpClient()
     .AddSingleton<LiteDatabase>(new LiteDatabase(dbPath))
     .AddSingleton<IWebhookRegistrationRepository, WebhookRegistrationRepository>()
     .AddSingleton<ILiteCollection<WebhookRegistered>>(p =>
