@@ -47,9 +47,6 @@ curl --request POST \
   --header 'content-type: {{contentType}}' \
   --data '{"eventName": "something_happened"}'
 
-
-
-
 ### Used https://requestbin.com to test webhooks
 
 ###
