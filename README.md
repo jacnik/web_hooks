@@ -1,8 +1,33 @@
 
 # Usage
-Example requests are in `requests.http` file.
-In vscode they can be send directly with [REST client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
-Or by using curl after expanding variables.
+### Start service
+```sh
+cd ./WebhookService
+dotnet run
+```
+### Use service
+> Example requests are in `requests.http` file.
+In vscode they can be send directly with [REST client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client). Or by using curl after expanding variables.
+#### Basic usage
+```sh
+# Register Webhook
+curl --request POST \
+  --url 'http://localhost:5000/webhooks' \
+  --header 'authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.cThIIoDvwdueQB468K5xDc5633seEFoqwxjF_xSJyQQ' \
+  --header 'content-type: application/json' \
+  --data '{
+    "url": "https://en9bayo995ajl.x.pipedream.net",
+    "trigger": "something_happened",
+    "content": "123.456.789",
+    "additionalHeaders": {}}'
+
+# trigger sending webhooks
+curl --request POST \
+  --url 'http://localhost:5000/events' \
+  --header 'authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.cThIIoDvwdueQB468K5xDc5633seEFoqwxjF_xSJyQQ' \
+  --header 'content-type: application/json' \
+  --data '{"eventName": "something_happened"}'
+```
 
 
 # Improvements
